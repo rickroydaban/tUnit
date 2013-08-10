@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import com.example.taxi.R;
 
 import connections.MyConnection;
+import data.TaxiStatus;
 
 import abanyu.transphone.taxi.login.GetDatabaseActivity;
 import abanyu.transphone.taxi.login.LoginTaxiActivity;
@@ -32,14 +33,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class GetTaxiData extends AsyncTask<Void, Void, String>{
+public class GetServerIP extends AsyncTask<Void, Void, String>{
   //parameters for onPreExecute, doInBackground, onPostExecute respectively
 	
   //Constructor Fetcher Variables	
   private TaxiMap taxiMapActivity; //the activity context
   private String url; //the url passed
-  private MyTaxi myTaxi;
   private MyConnection conn;
+  private MyTaxi myTaxi;
     
   //asynctask variables
   private ProgressDialog progressDialog;
@@ -50,17 +51,17 @@ public class GetTaxiData extends AsyncTask<Void, Void, String>{
   String json = "";
 	
   //CONSTRUCTOR	
-  public GetTaxiData(TaxiMap pActivityContext, String pStringUrl, MyTaxi pMyTaxi, MyConnection pConn){
+  public GetServerIP(TaxiMap pActivityContext, String pStringUrl, MyConnection pConn, MyTaxi pMyTaxi){
     taxiMapActivity = pActivityContext;
 	url = pStringUrl;
-	myTaxi = pMyTaxi;
 	conn = pConn;
+	myTaxi = pMyTaxi;
   }
 		
   protected void onPreExecute() {
 	super.onPreExecute();
 	progressDialog = new ProgressDialog(taxiMapActivity);
-	progressDialog.setMessage("Retrieving Taxi Information, Please wait...");
+	progressDialog.setMessage("Retrieving Server IP, Please wait...");
 	progressDialog.setIndeterminate(true);
 	progressDialog.show();
   }
@@ -83,6 +84,7 @@ public class GetTaxiData extends AsyncTask<Void, Void, String>{
     } catch (IOException e) {
 		System.out.println(e.getMessage());
     } 	
+	System.out.println("server ip: " + result);
     
 	return result;		
   }
@@ -90,20 +92,11 @@ public class GetTaxiData extends AsyncTask<Void, Void, String>{
   protected void onPostExecute(String result) {
 	super.onPostExecute(result);
 	progressDialog.hide();
-
-	try {
-		JSONObject jo = new JSONObject(result);
-
-		// RETRIEVE EACH JSON OBJECT'S FIELDS
-		myTaxi.setCompanyName(jo.getString("compName"));
-		myTaxi.setCompanyNumber(jo.getString("compNo"));
-		myTaxi.setDriverName(jo.getString("driverName"));        
-        myTaxi.setBodyNumber(jo.getString("bodyNo"));
-        myTaxi.setDescription(jo.getString("desc"));
-                
-	}catch (JSONException e) {
-      e.printStackTrace();
-    }	
+	conn.setServerIp(result);
+	
+    new GetTaxiData(taxiMapActivity, "http://transphone.freetzi.com/thesis/dbmanager.php?fname=getTaxiData&arg1="+LoginTaxiActivity.plateNo, myTaxi, conn).execute();
+	myTaxi.setStatus(TaxiStatus.vacant);
+	myTaxi.setPlateNumber(LoginTaxiActivity.plateNo);
+	System.out.println("got taxi data");
   }	
-  
 }

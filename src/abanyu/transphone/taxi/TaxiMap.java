@@ -25,6 +25,20 @@ package abanyu.transphone.taxi;
 
 import java.io.IOException;
 
+import actors.MyPassenger;
+import actors.MyTaxi;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.Toast;
+
 import com.example.taxi.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,21 +47,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 
-import abanyu.transphone.taxi.login.LoginTaxiActivity;
-import actors.*;
-import data.*;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.Toast;
-
+import connections.MyConnection;
 
 public class TaxiMap extends FragmentActivity implements LocationListener{
   // needs to extend fragment activity since fragments are needed in order to display map contents
@@ -75,8 +75,9 @@ public class TaxiMap extends FragmentActivity implements LocationListener{
 	
 //  public static Context context;  //EXPERIMENTAL ONLY. try asynctask instead of threads
   public static LatLng desCoords; //have to be static since it will be change by our server listener thread
-  public static actors.MyPassenger myPassenger;
-  public static actors.MyTaxi myTaxi;
+  public MyPassenger myPassenger;
+  public MyTaxi myTaxi;
+  public MyConnection conn;
   
   @Override
   protected void onCreate(Bundle savedInstanceState){
@@ -85,14 +86,13 @@ public class TaxiMap extends FragmentActivity implements LocationListener{
 	setContentView(R.layout.taxi_map);
 //	context = this; //EXPERIMENTAL ONLY. try asynctask instead of threads
 			
+	conn = new MyConnection();
+    myTaxi = new MyTaxi();	
+
     //creates a new MyTaxi object
-    myTaxi = new MyTaxi();
-    
-    new GetTaxiData(this, "http://transphone.freetzi.com/thesis/dbmanager.php?fname=getTaxiData&arg1="+LoginTaxiActivity.plateNo).execute();
+    new GetServerIP(this, "http://transphone.freetzi.com/thesis/dbmanager.php?fname=getServerIP", conn, myTaxi).execute();
     
 	//the taxi must have an initial status of a vacant status
-	myTaxi.setStatus(TaxiStatus.vacant);
-	myTaxi.setPlateNumber(LoginTaxiActivity.plateNo);
 	//defines the system behavior when the vacant button is clicked
 	vacantButton = (Button) findViewById(R.id.vacantButton);
 	vacantButton.setOnClickListener(new OnClickListener(){	
@@ -100,8 +100,8 @@ public class TaxiMap extends FragmentActivity implements LocationListener{
       public void onClick(View v){
 	    myTaxi.setStatus(data.TaxiStatus.vacant);
 
-		new SendServerAsyncTask(myTaxi).execute();
-		new Thread(new ServerListener(myTaxi)).start();
+		new SendServerAsyncTask(myTaxi,conn).execute();
+		new Thread(new ServerListener(myTaxi,conn)).start();
       }
 	});
 
@@ -156,9 +156,8 @@ public class TaxiMap extends FragmentActivity implements LocationListener{
                                             .title("Destination");    
 
 	  //manages the drawables to be shown in the google map
-      locationManager.requestLocationUpdates(locationProvider, locationUpdateByTime, locationUpdateByDist, this); 
-      new SendServerAsyncTask(myTaxi).execute();
-	  new Thread(new ServerListener(myTaxi)).start();
+      locationManager.requestLocationUpdates(locationProvider, locationUpdateByTime, locationUpdateByDist, this);      
+      new Thread(new ServerListener(myTaxi,conn)).start(); //starts listening for client requests
     }
   }
 	
@@ -191,8 +190,7 @@ public class TaxiMap extends FragmentActivity implements LocationListener{
 	  new DrawPathAsyncTask(TaxiMap.this, url).execute();
 	}
       
-	
-	new SendServerAsyncTask(myTaxi).execute();
+    new SendServerAsyncTask(myTaxi,conn).execute();
   }
 
   @Override

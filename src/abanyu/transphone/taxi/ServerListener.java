@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import connections.*;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.os.Handler;
@@ -13,9 +13,11 @@ import android.os.Looper;
 public class ServerListener implements Runnable{
   public static ServerSocket taxiSocket;
   private actors.MyTaxi myTaxi;
+  private MyConnection conn;
   
-  public ServerListener(actors.MyTaxi pMyTaxi){
+  public ServerListener(actors.MyTaxi pMyTaxi, MyConnection pConn){
 	  myTaxi=pMyTaxi;
+	  conn = pConn;
   }
   
   @Override
@@ -24,7 +26,7 @@ public class ServerListener implements Runnable{
 	ObjectInputStream input = null;
 		
 	try {
-	  taxiSocket = new ServerSocket(connections.MyConnection.taxiPort);
+	  taxiSocket = new ServerSocket(conn.getTaxiPort());
 	  socket = taxiSocket.accept();
 	  input = new ObjectInputStream(socket.getInputStream());
 		
@@ -39,7 +41,7 @@ public class ServerListener implements Runnable{
 	  myTaxi.setStatus(data.TaxiStatus.requested);
 			
 	  //sends this taxi object to the server to notify the requesting client about this taxi information that will be fetching him/her
-	  new SendServerAsyncTask(myTaxi).execute();
+	  new SendServerAsyncTask(myTaxi,conn).execute();
 				
 
 	  Handler handler = new Handler(Looper.getMainLooper());
@@ -56,9 +58,9 @@ public class ServerListener implements Runnable{
 	  ********************************************************************************************
 	  */
 	}catch (IOException e){
-	  e.printStackTrace();
-	}catch (ClassNotFoundException e1){
-	  e1.printStackTrace();
+	      System.out.println("taxi listener io exception"+e.getMessage());
+	}catch (ClassNotFoundException e){
+	      System.out.println("taxi listener class not found exception"+e.getMessage());
 	}finally{
 	  //close the opened connections
 	  try{
@@ -72,7 +74,7 @@ public class ServerListener implements Runnable{
 		  input.close();
 				
 	  }catch (IOException e){
-	    e.printStackTrace();
+		  System.out.println("taxi listener close io exception"+e.getMessage());
 	  }
 	}
   }

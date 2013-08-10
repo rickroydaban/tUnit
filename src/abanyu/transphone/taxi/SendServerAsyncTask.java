@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
+import connections.*;
 import android.os.AsyncTask;
 
 /*
@@ -15,26 +15,25 @@ public class SendServerAsyncTask extends AsyncTask<Void, Void, Void>{
   private Socket socket;
   private ObjectOutputStream output;
   private actors.MyTaxi myTaxi;
+  private MyConnection conn;
   
-  public SendServerAsyncTask(actors.MyTaxi pMyTaxi){
+  public SendServerAsyncTask(actors.MyTaxi pMyTaxi, MyConnection pConn){
 	myTaxi=pMyTaxi;  
+	conn = pConn;
   }
   @Override
   protected Void doInBackground(Void... args){
 	try{
-	  socket = new Socket(connections.MyConnection.serverIp, connections.MyConnection.serverPort); //creates a new socket to connect to the server
+	  System.out.println("server ip: " + conn.getServerIp() + "server port: " + conn.getServerPort());
+	  socket = new Socket(conn.getServerIp(), conn.getServerPort()); //creates a new socket to connect to the server
 	  output = new ObjectOutputStream(socket.getOutputStream());			
-
-//	  System.out.println("taxi obj: "+myTaxi);
-//	  System.out.println("curr lat: "+myTaxi.get);
-//	  System.out.println("curr lng: "+myTaxi.clientLng);
 
 	  output.writeObject(myTaxi); //adds a taxi instance on the output stream
 	  output.flush();
 	}catch(UnknownHostException e){
-      e.printStackTrace();
+	      System.out.println("taxi unknown host exception"+e.getMessage());
     }catch(IOException e){
-      System.out.println("rick io exception"+e.getMessage());
+      System.out.println("taxi io exception"+e.getMessage());
     }finally{
       try{
         if(socket != null)
