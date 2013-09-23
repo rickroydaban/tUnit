@@ -35,6 +35,27 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Make Unavailable"/>
+        
+        <Button 
+            android:id="@+id/disconnectButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Disconnect"/>
+        
+				<Button 
+            android:id="@+id/acceptButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Accept"/>    
+            
+			<Button 
+            android:id="@+id/rejectButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Reject"/>	
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,0 +1,10 @@
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_content"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:textSize="20sp"
+    android:textColor="#FFCC00"
+    android:background="#505050"
+    style="?android:attr/listSeparatorTextViewStyle" />
