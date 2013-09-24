@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.example.taxi.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
