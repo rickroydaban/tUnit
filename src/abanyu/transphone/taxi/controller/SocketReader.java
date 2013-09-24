@@ -94,13 +94,13 @@ public class SocketReader implements Runnable{
 							}else if(receivedObj.equals("resend")){      	  	
 								System.out.println("Taxi Log: Request resend from passenger");
 								new Thread(new SocketWriter(mappingMVC, "Server")).start(); //recends taxi data to the server
-							}else if(receivedObj.equals("cancel")){ //the passenger cancelled the transaction
+							}else if(receivedObj.equals("pCancel")){ //the passenger cancelled the transaction
 		    	  	  System.out.println("Taxi Log: The passenger has cancelled the request. vacating the taxi");
 								handler = new Handler(Looper.getMainLooper());
-		    	  	  
 		    	  	  handler.post(new Runnable() {				
 		    	  	  	@Override
 		    	  	  	public void run() {
+		    	  	  		Toast.makeText(mappingMVC.getView(), "Passenger has cancelled the request", Toast.LENGTH_LONG).show();
 		          	  	mappingMVC.getController().vacateTaxi(); //reset the taxi status to vacant
 		    	  	  	}
 		    	  	  });
