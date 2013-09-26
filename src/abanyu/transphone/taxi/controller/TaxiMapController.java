@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.taxi.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,7 +40,6 @@ public class TaxiMapController implements LocationListener, OnClickListener{
 		mappingMVC = new MappingMVC(pMappingData,pTaxiMap,this);
   	conn = mappingMVC.getModel().getConnectionData();
 		mappingMVC.getModel().getTaxi().setIp(getIPAddress());
-		
 		//add click listeners to interact with the buttons
 		mappingMVC.getView().getVacantButton().setOnClickListener(this);
 		mappingMVC.getView().getOccupyButton().setOnClickListener(this);
@@ -53,6 +53,7 @@ public class TaxiMapController implements LocationListener, OnClickListener{
 	  mappingMVC.getView().getUnavailableButton().setVisibility(View.GONE);
 		mappingMVC.getModel().setTaxiStatus(TaxiStatus.unavailable);	//unit will initially be available only if its location has been set					
 		mappingMVC.getView().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);	//keep screen on
+
 		System.out.println("Taxi Log: =");
 		System.out.println("Taxi Log: TaxiMapController Constructor has just finished");
 		System.out.println("Taxi Log: =");
@@ -74,7 +75,7 @@ public class TaxiMapController implements LocationListener, OnClickListener{
 			locationManager = (LocationManager)mappingMVC.getView().getSystemService(MappingView.LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 			System.out.println("Updating data on the initial process..");
-			updateData(false); //updatee the data on the initial process
+			updateData(false,true); //updatee the data on the initial process
 		}  		
 		
 		System.out.println("Taxi Log: Creating a new Socket Reader");
@@ -91,7 +92,7 @@ public class TaxiMapController implements LocationListener, OnClickListener{
 		isRegistered = false;
 	}
 		
-	public void updateData(boolean willExit){
+	public void updateData(boolean willExit, boolean willUpdateServer){
 		System.out.println("Taxi Log: Updating Data");
 		if(mappingMVC.getModel().getTaxi()!=null){
 			//check if the retrieved location data is within the parameter of cebu
@@ -102,11 +103,21 @@ public class TaxiMapController implements LocationListener, OnClickListener{
 						"&arg2="+mappingMVC.getModel().getTaxi().getCurLat()+
 						"&arg3="+mappingMVC.getModel().getTaxi().getCurLng()+
 						"&arg4="+mappingMVC.getModel().getTaxi().getStatus();
+					
+					if((mappingMVC.getModel().getTaxi().getPrevLat()>9.40 && mappingMVC.getModel().getTaxi().getPrevLng()>123.27)&&
+						 (mappingMVC.getModel().getTaxi().getPrevLat()<11.3 && mappingMVC.getModel().getTaxi().getPrevLng()<124.20)){
+								trackUrl = trackUrl+
+										"&arg5="+mappingMVC.getModel().getTaxi().getPrevLat()+
+										"&arg6="+mappingMVC.getModel().getTaxi().getPrevLng();						
+					}
+					
   	
 					System.out.println("Taxi Log: url for adding rows in the track table is set: "+ trackUrl);
 					if(!willExit){
 						updateMarkers(new LatLng(mappingMVC.getModel().getTaxi().getCurLat(),mappingMVC.getModel().getTaxi().getCurLng()),true);
-						new Thread(new SocketWriter(mappingMVC, "Server")).start();//send updates to server
+						
+						if(willUpdateServer)
+							new Thread(new SocketWriter(mappingMVC, "Server")).start();//send updates to server
 					}
 					
 					new Thread(new MappingJSONParser(trackUrl,mappingMVC,true)).start();//send updates to database
@@ -270,18 +281,25 @@ public class TaxiMapController implements LocationListener, OnClickListener{
   	mappingMVC.getView().getOccupyButton().setVisibility(View.GONE);
 	  mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.vacant);
 	  mappingMVC.getModel().setPassenger(null);
-	  
-	  updateData(false);//update data and will not exit the app
+	  mappingMVC.getView().getPassengerName().setText("No Passenger");
+	  updateData(false,true);//update data and will not exit the app
   }
   
   public void makeUnavailable(){
 	  mappingMVC.getView().getUnavailableButton().setVisibility(View.GONE);
 	  mappingMVC.getView().getOccupyButton().setVisibility(View.GONE);
 	  mappingMVC.getView().getVacantButton().setVisibility(View.VISIBLE);
-		mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.unavailable);
-  	mappingMVC.getModel().setPassenger(null);
-		
-		updateData(false);//update data and will not exit the app
+	  mappingMVC.getView().getPassengerName().setText("No Passenger");
+
+	  if(mappingMVC.getModel().getTaxi().getStatus()==TaxiStatus.requested || mappingMVC.getModel().getTaxi().getStatus()==TaxiStatus.occupied){
+			mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.unavailable);
+			updateData(false, false);
+	  	new Thread(new SocketWriter(mappingMVC, "Server","taxiCancel:"+mappingMVC.getModel().getTaxiPlateNo())).start();							
+	  	mappingMVC.getModel().setPassenger(null);
+		}else{
+			mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.unavailable);
+			updateData(false,true);//update data and will not exit the app						
+		}
   }
 	
 	@Override
@@ -302,7 +320,7 @@ public class TaxiMapController implements LocationListener, OnClickListener{
 		  	mappingMVC.getView().getUnavailableButton().setVisibility(View.VISIBLE);
 			  mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.occupied);
 			  
-			  updateData(false);//update data and will not exit the app
+			  updateData(false,true);//update data and will not exit the app
 				break;
 				
 			case R.id.unavailableButton:
@@ -313,27 +331,38 @@ public class TaxiMapController implements LocationListener, OnClickListener{
 			case R.id.disconnectButton:
 				System.out.println("Taxi Log: Disconnect Button Pressed. Ask for permission from the server to exit!");
 		  	mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.disconnected);
-		  	updateData(false);//update data and will not exit the app still have to wait for server reply to exit
+		  	updateData(false,true);//update data and will not exit the app still have to wait for server reply to exit
 		  	break;
 
 			case R.id.acceptButton:
 				System.out.println("Taxi Log: Accept Button Pressed. Change Route!");
+			  mappingMVC.getView().getPassengerName().setText(mappingMVC.getModel().getPassenger().getPassengerName());
 				showRouteToPassenger = true;
 		  	mappingMVC.getView().getAcceptButton().setVisibility(View.GONE);
 		  	mappingMVC.getView().getRejectButton().setVisibility(View.GONE);
 		  	mappingMVC.getView().getOccupyButton().setVisibility(View.VISIBLE);
 		  	mappingMVC.getView().getUnavailableButton().setVisibility(View.VISIBLE);
 		  	mappingMVC.getView().getDisconnectButton().setVisibility(View.VISIBLE);
+  	    mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.requested);
 		  	
 		  	updateMarkers(new LatLng(mappingMVC.getModel().getTaxi().getCurLat(), mappingMVC.getModel().getTaxi().getCurLng()),true);
 		  	break;
 				
 			case R.id.rejectButton:
-				System.out.println("Taxi Log: Reject Button Pressed. Make Unavailable!");
+				System.out.println("Taxi Log: Reject Button Pressed. Make Vacant!");
 		  	mappingMVC.getView().getAcceptButton().setVisibility(View.GONE);
 		  	mappingMVC.getView().getRejectButton().setVisibility(View.GONE);
 		  	mappingMVC.getView().getDisconnectButton().setVisibility(View.VISIBLE);
-		  	makeUnavailable();
+		  	
+			  mappingMVC.getView().getVacantButton().setVisibility(View.GONE); //vacant button is not clickable anymore since the unit`s status is already vacant
+			  mappingMVC.getView().getUnavailableButton().setVisibility(View.VISIBLE); //vacant button is not clickable anymore since the unit`s status is already vacant
+		  	mappingMVC.getView().getOccupyButton().setVisibility(View.GONE);
+			  mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.vacant);
+			  mappingMVC.getModel().setPassenger(null);
+				updateMarkers(new LatLng(mappingMVC.getModel().getTaxi().getCurLat(),mappingMVC.getModel().getTaxi().getCurLng()),true);
+				System.out.println("Taxi Log: "+"taxiReject:"+mappingMVC.getModel().getTaxiPlateNo()+" rejects passenger ip: "+mappingMVC.getModel().getTaxi().getPassengerIP());
+				Toast.makeText(mappingMVC.getView(), "taxiReject:"+mappingMVC.getModel().getTaxiPlateNo(), Toast.LENGTH_LONG).show();
+				new Thread(new SocketWriter(mappingMVC, "Server","taxiReject:"+mappingMVC.getModel().getTaxiPlateNo())).start();				
 		  	break;
 		}
 	}

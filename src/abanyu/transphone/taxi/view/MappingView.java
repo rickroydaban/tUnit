@@ -28,6 +28,7 @@ import abanyu.transphone.taxi.model.MappingData;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.taxi.R;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,11 +46,14 @@ public class MappingView extends FragmentActivity{
   private MarkerOptions srcMO; //global because it is dependent on the returned location estimation
   private MarkerOptions desMO; //global because it is dependent on the returned passenger object by the server
 
+	private TextView passengerName;
+
 	@Override
   protected void onCreate(Bundle savedInstanceState){
   	super.onCreate(savedInstanceState);
   	setContentView(R.layout.taxi_map);
       	
+  	passengerName = (TextView) findViewById(R.id.passengerName);
   	vacantButton = (Button) findViewById(R.id.vacantButton);
   	occupiedButton = (Button) findViewById(R.id.occupyButton);
   	unavailableButton = (Button) findViewById(R.id.unavailableButton);
@@ -107,6 +111,10 @@ public class MappingView extends FragmentActivity{
 	
 	public Button getRejectButton(){
 		return rejectButton;
+	}
+	
+	public TextView getPassengerName(){
+		return passengerName;
 	}
 }
 

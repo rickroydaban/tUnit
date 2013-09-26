@@ -255,6 +255,11 @@ public class LoginController implements LoginInterface{
   		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
   			itemClicked=((TextView) view).getText().toString();   				
   			
+  			if(itemClicked.charAt(4)=='-'&&itemClicked.length()>6&&itemClicked.length()<8)
+  				new SimpleJSONParser().getJSONfromURL(conn.getDBUrl()+"/thesis/dbmanager.php?fname=setTaxiUsed&arg1="+loginMVC.getLoginModel().getSelectedTaxiPN());
+  			else if(itemClicked.charAt(4)=='-'&&itemClicked.charAt(7)=='-')
+  				new SimpleJSONParser().getJSONfromURL(conn.getDBUrl()+"/thesis/dbmanager.php?fname=setDriverUsed&arg1="+loginMVC.getLoginModel().getSelectedDriverLicense());
+  			
   			if(thisMode==JSONMode.GET)
   				setLoginDataIDs();	  		  	
   			else

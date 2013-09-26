@@ -5,7 +5,7 @@
     android:padding="10dp"
     android:orientation="vertical" 
     android:gravity="center"
-    android:background="#000000">
+    android:background="#2e313a">
 	
     <TextView
         android:id="@+id/failed"
@@ -20,7 +20,7 @@
         android:id="@+id/passwordField"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:background="@drawable/rounded"
         android:password="true"
         android:hint="password"
         android:padding="10dp"
@@ -33,6 +33,7 @@
         android:text="AUTHENTICATE"
         android:textColor="#ffffff"
         android:padding="15dp"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="40dp"
+        android:background="@drawable/rounded_gray"/>
 
 </LinearLayout>

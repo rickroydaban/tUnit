@@ -6,5 +6,6 @@
     android:padding="15dp"
     android:textSize="20sp"
     android:textColor="#FFCC00"
-    android:background="#505050"
-    style="?android:attr/listSeparatorTextViewStyle" />
+    android:background="@drawable/listitem"
+    style="?android:attr/listSeparatorTextViewStyle"
+    android:text="adasdad"/>

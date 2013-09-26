@@ -8,54 +8,184 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/relativeLayout2"
+        android:layout_below="@+id/relativeLayout5"/>
     
     <LinearLayout
         android:id="@+id/linear"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-        <Button 
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_gray"
+        android:showDividers="middle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
+
+        <Button
             android:id="@+id/vacantButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="Make Vacant"/>
-        
-        <Button 
+            android:text="Make Vacant"
+            android:background="#00000000"/>
+
+        <TextView
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/textView"
+                android:background="#d2d2d2"
+                android:text=" "
+                android:phoneNumber="true"/>
+
+        <Button
             android:id="@+id/occupyButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="Make Occupied"/>
-        
-        <Button 
+            android:text="Make Occupied"
+            android:background="#00000000"/>
+
+        <TextView
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/textView2"
+                android:background="#d2d2d2"
+                android:text=" "
+                android:phoneNumber="true"/>
+
+        <Button
             android:id="@+id/unavailableButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="Make Unavailable"/>
-        
-        <Button 
-            android:id="@+id/disconnectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Disconnect"/>
-        
-				<Button 
-            android:id="@+id/acceptButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Accept"/>    
-            
-			<Button 
-            android:id="@+id/rejectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reject"/>	
+            android:text="Make Unavailable"
+            android:background="#00000000"/>
+
     </LinearLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="#2E313A"
+            android:id="@+id/relativeLayout2">
+
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="12dp"
+                android:id="@+id/relativeLayout">
+
+            <Button
+    android:id="@+id/rejectButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:text="Reject"
+    android:background="#00000000"
+    android:padding="5dp"
+    android:textColor="#2E313A"
+    android:layout_marginLeft="5dp"/>
+
+            <RelativeLayout
+                    android:layout_width="1dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toRightOf="@+id/rejectButton"
+                    android:background="#ccc"
+                    android:id="@+id/relativeLayout3">
+
+            </RelativeLayout>
+
+            <Button
+    android:id="@+id/acceptButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:text="Accept"
+    android:layout_alignParentTop="true"
+    android:layout_toRightOf="@+id/rejectButton"
+    android:padding="5dp"
+    android:textColor="#2E313A"
+    android:background="#00000000"
+    android:layout_marginLeft="5dp"
+                    />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="11dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true">
+	
+            		<TextView 
+            		    android:layout_width="wrap_content"
+            		    android:layout_height="wrap_content"
+            		    android:id="@+id/passengerName"
+            				android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:text="No Passenger"/>
+
+        </RelativeLayout>
+        
+        
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="11dp"
+                android:background="@drawable/rounded_gray"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true">
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView"
+                    android:src="@android:drawable/presence_busy"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="5dp"/>
+
+            <Button
+                android:id="@+id/disconnectButton"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="Disconnect"
+                android:background="#00000000"
+                android:padding="5dp"
+                android:layout_toRightOf="@+id/imageView"
+                android:textColor="#fff"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="4dp"
+            android:layout_below="@+id/linear"
+            android:layout_alignParentLeft="true"
+            android:background="#d2d2d2"
+            android:id="@+id/relativeLayout4">
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/gradient_yellow"
+            android:id="@+id/relativeLayout5"
+            android:layout_below="@+id/relativeLayout4"
+            android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

@@ -1,28 +1,44 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="#FFCC00">
+	android:background="@drawable/gradient_darkgray">
 
 	<TextView 
 		android:id="@+id/listview_header"
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
 		android:gravity="center_horizontal"
-    android:padding="30dp"
+    android:padding="15dp"
     android:textSize="30sp"
-    android:textStyle="bold"
-		android:text="HEADER" 
-		android:textColor="#FFCC00"
-		android:background="#232323"/>
+    android:text="HEADER"
+		android:textColor="#2E313A"
+		android:background="@drawable/gradient_gray"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:typeface="normal"
+            />
 
 	<TextView 
 	  android:layout_height="10dp"
 	  android:layout_width="fill_parent"
-	  android:background="#303030"/>
+	  android:background="#ffcc00"
+      android:layout_below="@+id/listview_header"
+      android:layout_alignParentLeft="true"
+      android:id="@+id/textView"
+      android:autoText="false"/>
 	
 	<ListView
     android:id="@android:id/list"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"/>
-	
-</TableLayout>
+    android:layout_height="fill_parent"
+    android:layout_below="@+id/textView"/>
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="4dp"
+            android:background="#d2d2d2"
+            android:id="@+id/relativeLayout"
+            android:layout_below="@+id/listview_header"
+            android:layout_alignParentLeft="true"/>
+
+</RelativeLayout>

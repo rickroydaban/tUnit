@@ -59,7 +59,6 @@ public class SocketReader implements Runnable{
        	
 	      	  	System.out.println("Taxi Log: registering the passenger");
 	      	  	mappingMVC.getModel().setPassenger(receivedPassengerObj);
-	      	    mappingMVC.getModel().getTaxi().setStatus(TaxiStatus.requested);
 	      	    mappingMVC.getModel().getTaxi().setPassengerIp(receivedPassengerObj.getIp());
 	      	    
 	    	  	  handler = new Handler(Looper.getMainLooper());
@@ -90,7 +89,7 @@ public class SocketReader implements Runnable{
 						}else if(receivedObj instanceof String){ //error occured after trying to connect to the server
 							if(receivedObj.equals("disconnect")){
 								System.out.println("Taxi Log: The application will not update the db and exit since the server permitted it to do the action");
-								mappingMVC.getController().updateData(true); //update the online db before disconnecting the app
+								mappingMVC.getController().updateData(true,true); //update the online db before disconnecting the app
 							}else if(receivedObj.equals("resend")){      	  	
 								System.out.println("Taxi Log: Request resend from passenger");
 								new Thread(new SocketWriter(mappingMVC, "Server")).start(); //recends taxi data to the server
