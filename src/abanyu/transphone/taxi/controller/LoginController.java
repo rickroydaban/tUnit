@@ -190,7 +190,7 @@ public class LoginController implements LoginInterface{
 	  		driver.put("license", jo.getString("license"));
 	  		driver.put("password", jo.getString("password"));
       
-	  		listElems.add(driver.get("license"));
+	  		listElems.add(driver.get("name"));
 	  		driverList.add((HashMap<String, String>) driver);
 	  	}
 	  	
