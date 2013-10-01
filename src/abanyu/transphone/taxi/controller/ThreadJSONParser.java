@@ -13,18 +13,22 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
-public class SimpleJSONParser {	
-	static InputStream input = null;
-	static JSONObject jObj = null;
-	static String json = "";
+import abanyu.transphone.taxi.view.LoginBox;
+
+public class ThreadJSONParser implements Runnable{	
+	private InputStream input = null;
+	private JSONObject jObj = null;
+	private String json = "";
+	private String url;
+	private LoginBox box;
 	
-	public SimpleJSONParser() {
+	
+	public ThreadJSONParser(LoginBox pBox, String pUrl) {
+		url = pUrl;
+		box = pBox;
 	}
 	
-	public String getJSONfromURL(String url) {
-		
-		//Making HTTP Request
-		
+	public void getJSONfromURL() {		
 		try{
 			DefaultHttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost(url);
@@ -53,6 +57,11 @@ public class SimpleJSONParser {
 			e.printStackTrace();
 		}
 		
-		return json;
+		box.result = json;
+	}
+
+	@Override
+	public void run() {
+		getJSONfromURL();
 	}
 }

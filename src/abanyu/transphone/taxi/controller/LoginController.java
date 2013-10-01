@@ -14,6 +14,7 @@ import abanyu.transphone.taxi.LoginMVC;
 import abanyu.transphone.taxi.model.JSONMode;
 import abanyu.transphone.taxi.model.LoginData;
 import abanyu.transphone.taxi.view.ErrorView;
+import abanyu.transphone.taxi.view.LoginBox;
 import abanyu.transphone.taxi.view.PasswordBox;
 import abanyu.transphone.taxi.view.MappingView;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class LoginController implements LoginInterface{
 	private List<String> urlParams; //global declaration to dynamically create parameters which will be appended to the JSON url
 
 	private boolean requirePassword; //global declaration that will determine if a password will be prompted during list selections
+	private String box;
 	private String setterParamClass, //parameter data type for the setter class which is required for dynamic method invocations on the login model methods right after list selections
 //				 getterParamClass, //parameter data type for the getter class which is required for dynamic method invocations on the login model methods in retrieving specific table primary keys
 				 idSetterFunction, //function name for the setter class which is required for dynamic method invocations on the login model methods right after list selections
@@ -56,8 +58,9 @@ public class LoginController implements LoginInterface{
 				 itemClicked; 		 //global declaration that will hold the name of the selected item in the listView
 //	private Object functionClass;		 //the data type of the function which will be invoked by the login getter method
 
-	private PasswordBox cdd;
-	private MyConnection conn;
+	private PasswordBox passwordBox;
+	private LoginBox loginBox;
+	public MyConnection conn;
 	public LoginController(LoginMVC pLoginMVC){
 		loginMVC = pLoginMVC;		
 		loginMVC.setLoginController(this);
@@ -88,7 +91,6 @@ public class LoginController implements LoginInterface{
 	  		// RETRIEVE EACH JSON OBJECT'S FIELDS
 	  		company.put("id", String.valueOf(jo.getString("id")));
 	  		company.put("name", jo.getString("name"));
-	  		company.put("password", jo.getString("password"));
 	  		company.put("contact", jo.getString("contact"));
 	  		company.put("ip", jo.getString("serverip"));
       	  		
@@ -98,22 +100,22 @@ public class LoginController implements LoginInterface{
   
 	  	loginMVC.getLoginModel().listCompanies(companyList);
 
-//	  	functionClass = loginMVC.getLoginModel();
 	  	dbTableEntryList = companyList;
 	  	requirePassword = true;
+	  	box = "username";
 	  	setterParamClass = "int";
 	  	idSetterFunction = "setSelCompanyID";
 	  	mapComparator = "name";
 	  	keyGet = "id";
 	  	thisMode = JSONMode.GET;
 	  	nextMode = JSONMode.GET;
-
 	  	nextUrl = conn.getDBUrl()+"/thesis/dbmanager.php?fname=getTaxiInfos";
 	  	progDialogMsg = "Retrieving All Taxi Data";
 	  	nextFunction = "listTaxis"; 
 //	  	getterParamClass = "string";	  	
 	  	urlParams.clear();
 	  	urlParams.add("getSelectedCompanyID");  		  
+	  	
 	  	
   		((TextView)loginMVC.getLoginView().findViewById(R.id.listview_header)).setText("COMPANY LIST");
 	  	makeListView(listElems);
@@ -199,9 +201,10 @@ public class LoginController implements LoginInterface{
 //	  	functionClass = this;
 	  	dbTableEntryList = driverList;
 	  	requirePassword = true;
+	  	box = "password";
 	  	setterParamClass = "None";
 	  	idSetterFunction = "setSelDriverLicense";
-	  	mapComparator = "license";
+	  	mapComparator = "name";
 	  	keyGet = "license";
 	  	thisMode = JSONMode.GET;
 	  	nextMode = JSONMode.SET;
@@ -224,7 +227,7 @@ public class LoginController implements LoginInterface{
 	@Override
 	public void registerAndStart() {
 		LoginData data = loginMVC.getLoginModel();
-		cdd.dismiss();
+		passwordBox.dismiss();
 	  loginMVC.getLoginView().finish();
 
 	  Intent i = new Intent(loginMVC.getLoginView(), MappingView.class);
@@ -255,11 +258,6 @@ public class LoginController implements LoginInterface{
   		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
   			itemClicked=((TextView) view).getText().toString();   				
   			
-  			if(itemClicked.charAt(4)=='-'&&itemClicked.length()>6&&itemClicked.length()<8)
-  				new SimpleJSONParser().getJSONfromURL(conn.getDBUrl()+"/thesis/dbmanager.php?fname=setTaxiUsed&arg1="+loginMVC.getLoginModel().getSelectedTaxiPN());
-  			else if(itemClicked.charAt(4)=='-'&&itemClicked.charAt(7)=='-')
-  				new SimpleJSONParser().getJSONfromURL(conn.getDBUrl()+"/thesis/dbmanager.php?fname=setDriverUsed&arg1="+loginMVC.getLoginModel().getSelectedDriverLicense());
-  			
   			if(thisMode==JSONMode.GET)
   				setLoginDataIDs();	  		  	
   			else
@@ -270,8 +268,14 @@ public class LoginController implements LoginInterface{
 	
 	public void setLoginDataIDs(){
 		if(requirePassword){
-			cdd=new PasswordBox(loginMVC,dbTableEntryList,itemClicked, idSetterFunction, setterParamClass, mapComparator, keyGet);
-			cdd.show();  	    	
+			System.out.println("Box: "+box);
+			if(box.equals("password")){
+				passwordBox=new PasswordBox(loginMVC,dbTableEntryList,itemClicked, idSetterFunction, setterParamClass, mapComparator, keyGet);
+				passwordBox.show();  	    	
+			}else{
+				loginBox=new LoginBox(loginMVC,dbTableEntryList,itemClicked, idSetterFunction, setterParamClass, mapComparator, keyGet);
+				loginBox.show();  	    	
+			}
 		}else{
     	try {
     		if(setterParamClass.equals("int"))

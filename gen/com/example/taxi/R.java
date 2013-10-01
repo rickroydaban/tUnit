@@ -158,47 +158,49 @@ containing a value of this type.
         public static final int taxi=0x7f020010;
     }
     public static final class id {
-        public static final int acceptButton=0x7f04001d;
-        public static final int cancelButton=0x7f040010;
-        public static final int disconnectButton=0x7f04001f;
+        public static final int acceptButton=0x7f04001e;
+        public static final int cancelButton=0x7f040011;
+        public static final int disconnectButton=0x7f040020;
         public static final int errorCause=0x7f040006;
-        public static final int errorView=0x7f04000f;
-        public static final int failed=0x7f040012;
+        public static final int errorView=0x7f040010;
+        public static final int failed=0x7f040013;
         public static final int hybrid=0x7f040004;
         public static final int imageView=0x7f040005;
-        public static final int linear=0x7f040016;
+        public static final int linear=0x7f040017;
         public static final int list_content=0x7f040009;
         public static final int listview_header=0x7f04000a;
-        public static final int loginButton=0x7f040011;
-        public static final int map=0x7f040013;
+        public static final int loginButton=0x7f040012;
+        public static final int map=0x7f040014;
         public static final int none=0x7f040000;
         public static final int normal=0x7f040001;
-        public static final int occupyButton=0x7f040018;
-        public static final int passengerName=0x7f04001e;
-        public static final int passwordField=0x7f04000e;
+        public static final int occupyButton=0x7f040019;
+        public static final int passengerName=0x7f04001f;
+        public static final int passwordField=0x7f04000f;
         public static final int passwordLabel=0x7f04000d;
         public static final int passwordPrompter=0x7f04000c;
-        public static final int rejectButton=0x7f04001b;
+        public static final int rejectButton=0x7f04001c;
         public static final int relativeLayout=0x7f04000b;
-        public static final int relativeLayout2=0x7f040014;
-        public static final int relativeLayout3=0x7f04001c;
-        public static final int relativeLayout4=0x7f040020;
-        public static final int relativeLayout5=0x7f040015;
+        public static final int relativeLayout2=0x7f040015;
+        public static final int relativeLayout3=0x7f04001d;
+        public static final int relativeLayout4=0x7f040021;
+        public static final int relativeLayout5=0x7f040016;
         public static final int reloadButton=0x7f040007;
         public static final int satellite=0x7f040002;
         public static final int terrain=0x7f040003;
         public static final int textView=0x7f040008;
-        public static final int textView2=0x7f040019;
-        public static final int unavailableButton=0x7f04001a;
-        public static final int vacantButton=0x7f040017;
+        public static final int textView2=0x7f04001a;
+        public static final int unavailableButton=0x7f04001b;
+        public static final int usernameField=0x7f04000e;
+        public static final int vacantButton=0x7f040018;
     }
     public static final class layout {
         public static final int errorview=0x7f030000;
         public static final int listnode=0x7f030001;
         public static final int listview=0x7f030002;
-        public static final int passwordbox=0x7f030003;
-        public static final int taxi_login=0x7f030004;
-        public static final int taxi_map=0x7f030005;
+        public static final int loginbox=0x7f030003;
+        public static final int passwordbox=0x7f030004;
+        public static final int taxi_login=0x7f030005;
+        public static final int taxi_map=0x7f030006;
     }
     public static final class menu {
         public static final int taxi=0x7f080000;

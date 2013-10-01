@@ -76,7 +76,7 @@ public void onClick(View v) {
     			System.out.println("Invocation target exception: "+e.getMessage());
       	}      	
       	
-      	if(mapComparator == "name" && ((String)loginData.getKeyValueByName("id", loginData.getSelectedCompanyID(), "ip", map)).equals("")){
+      	if(selected.charAt(4) == '-' && selected.charAt(7) == '-' && ((String)loginData.getKeyValueByName("id", loginData.getSelectedCompanyID(), "ip", map)).equals("")){
       		dismiss();	
       		stopAndShowError("Server is not yet online");
       	}else{ //the system will not proceed if the server is offline

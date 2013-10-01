@@ -52,6 +52,7 @@ public class LoginData{
   public Object getKeyValueByName(String mapComparator, Object selName, String getKeyValue, List<HashMap<String, String>> pMap){
   	for(HashMap<String, String> map: pMap) {
       if(selName instanceof String){
+      	System.out.println("Checking mapComparator: "+map.get(mapComparator)+" == selected: "+selName);
     		if(map.get(mapComparator).equals(selName)){
     			return getKeyValue(getKeyValue, map);
     		}
@@ -67,12 +68,15 @@ public class LoginData{
   
   public Object getKeyValue(String getKeyValue, HashMap<String, String> map){
 		Object value = map.get(getKeyValue);
-	  
+
+		System.out.println("Returning "+value);
+
 		if(!(value instanceof String))
 			return String.valueOf(value);
 		else
 			return value;
-  	
+
+		
   }
   
   public int getSelectedCompanyID(){
